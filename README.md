@@ -1,0 +1,1 @@
+# Rocket.Chat.check_mk-integration
