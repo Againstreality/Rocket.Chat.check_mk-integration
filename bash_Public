@@ -1,0 +1,30 @@
+#!/bin/bash
+#Created by Christian Schuster and Tobias Orth.
+#This script is used to get check_mk notifications in RocketChat
+
+#Modify these variables for your environment
+MY_CHECK_MK="Your check_mk URL"
+MY_ROCKET_CHAT="Your WEBHook URL"
+
+
+
+#Set the message icon based on Check_mk service state
+if [ "$STATE$" = "2" ]
+then
+    ICON=":exclamation:"
+elif [ "$STATE$" = "1" ]
+then
+    ICON=":warning:"
+elif [ "$STATE$" = "0" ]
+then
+    ICON=":white_check_mark:"
+elif [ "$STATE$" = "3" ]
+then
+    ICON=":question:"
+else
+    ICON=":grey_exclamation:"
+fi
+
+#Send message to RocketChat
+curl -X POST --data "payload={ \"text\": \"${ICON} HOST: $HOST$   SERVICE: $APPLICATION$     MESSAGE: $TEXT$ <$MY_CHECK_MK/|more info>\"}" $MY_ROCKET_CHAT
+#Do what you want with it
