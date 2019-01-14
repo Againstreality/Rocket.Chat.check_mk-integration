@@ -32,7 +32,7 @@ if [ "$NOTIFY_WHAT" == "SERVICE" ]
         ICON=":grey_exclamation:"
     fi
 
-    curl -X POST --data "payload={ \"text\": \"${ICON}\
+    curl -X POST --data "payload={ \"text\": \"${ICON} *$NOTIFY_HOSTNAME - $NOTIFY_SERVICEDESC - $NOTIFY_PREVIOUSSERVICEHARDSHORTSTATE->$NOTIFY_SERVICESHORTSTATE* \n\
     DATE: $NOTIFY_LONGDATETIME \n \
     WHAT: $NOTIFY_WHAT \n \
     TYPE: $NOTIFY_NOTIFICATIONTYPE \n \
@@ -58,7 +58,7 @@ else
       ICON=":grey_exclamation:"
   fi
 
-  curl -X POST --data "payload={ \"text\": \"${ICON}\
+  curl -X POST --data "payload={ \"text\": \"${ICON} *$NOTIFY_HOSTNAME - $NOTIFY_HOSTCHECKCOMMAND - $NOTIFY_PREVIOUSHOSTHARDSHORTSTATE->$NOTIFY_HOSTSHORTSTATE* \n\
   DATE: $NOTIFY_LONGDATETIME \n \
   WHAT: $NOTIFY_WHAT \n \
   TYPE: $NOTIFY_NOTIFICATIONTYPE \n \
