@@ -1,6 +1,13 @@
 #!/bin/bash
+# Rocket.Chat.check_mk-integartion
+# First line after shebang will be used in check_mk as plugin-name
+
 #Created by Christian Schuster and Tobias Orth.
 #This script is used to get check_mk notifications in RocketChat
+
+# Place into /omd/sites/$YOURSITENAME/local/share/check_mk/notifications/rocketchat
+# chown YOURSITENAME:YOURSITENAME /omd/sites/$YOURSITENAME/local/share/check_mk/notifications/rocketchat
+# chmod +x /omd/sites/$YOURSITENAME/local/share/check_mk/notifications/rocketchat
 
 #Modify these variables for your environment
 MY_CHECK_MK="Your check_mk URL"
