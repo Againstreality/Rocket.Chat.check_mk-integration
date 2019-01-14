@@ -1,5 +1,6 @@
+
 #!/bin/bash
-# Rocket.Chat.check_mk-integartion
+# Rocket.Chat.check_mk-integration
 # First line after shebang will be used in check_mk as plugin-name
 
 #Created by Christian Schuster and Tobias Orth.
@@ -9,29 +10,65 @@
 # chown YOURSITENAME:YOURSITENAME /omd/sites/$YOURSITENAME/local/share/check_mk/notifications/rocketchat
 # chmod +x /omd/sites/$YOURSITENAME/local/share/check_mk/notifications/rocketchat
 
-#Modify these variables for your environment
-MY_CHECK_MK="Your check_mk URL"
+#Modify this variable for your environment
 MY_ROCKET_CHAT="Your WEBHook URL"
 
+if [ "$NOTIFY_WHAT" == "SERVICE" ]
+  then
+    #Set the message icon based on Check_mk host state
+    if [ "$NOTIFY_SERVICESHORTSTATE" = "CRIT" ]
+    then
+        ICON=":exclamation:"
+    elif [ "$NOTIFY_SERVICESHORTSTATE" = "WARN" ]
+    then
+        ICON=":warning:"
+    elif [ "$NOTIFY_SERVICESHORTSTATE" = "OK" ]
+    then
+        ICON=":white_check_mark:"
+    elif [ "$NOTIFY_SERVICESHORTSTATE" = "UNKNOWN" ]
+    then
+        ICON=":question:"
+    else
+        ICON=":grey_exclamation:"
+    fi
 
-
-#Set the message icon based on Check_mk service state
-if [ "$STATE$" = "2" ]
-then
-    ICON=":exclamation:"
-elif [ "$STATE$" = "1" ]
-then
-    ICON=":warning:"
-elif [ "$STATE$" = "0" ]
-then
-    ICON=":white_check_mark:"
-elif [ "$STATE$" = "3" ]
-then
-    ICON=":question:"
+    curl -X POST --data "payload={ \"text\": \"${ICON} *$NOTIFY_HOSTNAME - $NOTIFY_SERVICEDESC - $NOTIFY_PREVIOUSSERVICEHARDSHORTSTATE->$NOTIFY_SERVICESHORTSTATE* \n\
+    DATE: $NOTIFY_LONGDATETIME \n \
+    WHAT: $NOTIFY_WHAT \n \
+    TYPE: $NOTIFY_NOTIFICATIONTYPE \n \
+    HOST: $NOTIFY_HOSTNAME \n \
+    HOSTALIAS: $NOTIFY_HOSTALIAS \n \
+    HOSTADDRESS: $NOTIFY_HOSTADDRESS \n \
+    SERVICE: $NOTIFY_SERVICEDESC \n \
+    STATE: $NOTIFY_PREVIOUSSERVICEHARDSHORTSTATE -> $NOTIFY_SERVICESHORTSTATE \n \
+    MESSAGE: $NOTIFY_SERVICEOUTPUT \n \
+    \"}" $MY_ROCKET_CHAT
 else
-    ICON=":grey_exclamation:"
+  #Set the message icon based on Check_mk host state
+  if [ "$NOTIFY_HOSTSHORTSTATE" = "UNREACH" ]
+  then
+      ICON=":exclamation:"
+  elif [ "$NOTIFY_HOSTSHORTSTATE" = "DOWN" ]
+  then
+      ICON=":warning:"
+  elif [ "$NOTIFY_SERVICESHORTSTATE" = "UP" ]
+  then
+      ICON=":white_check_mark:"
+  else
+      ICON=":grey_exclamation:"
+  fi
+
+  curl -X POST --data "payload={ \"text\": \"${ICON} *$NOTIFY_HOSTNAME - $NOTIFY_HOSTCHECKCOMMAND - $NOTIFY_PREVIOUSHOSTHARDSHORTSTATE->$NOTIFY_HOSTSHORTSTATE* \n\
+  DATE: $NOTIFY_LONGDATETIME \n \
+  WHAT: $NOTIFY_WHAT \n \
+  TYPE: $NOTIFY_NOTIFICATIONTYPE \n \
+  HOST: $NOTIFY_HOSTNAME \n \
+  HOSTALIAS: $NOTIFY_HOSTALIAS \n \
+  HOSTADDRESS: $NOTIFY_HOSTADDRESS \n \
+  SERVICE: $NOTIFY_HOSTCHECKCOMMAND \n \
+  STATE: $NOTIFY_PREVIOUSHOSTHARDSHORTSTATE -> $NOTIFY_HOSTSHORTSTATE \n \
+  MESSAGE: $NOTIFY_HOSTOUTPUT \n \
+  \"}" $MY_ROCKET_CHAT
 fi
 
-#Send message to RocketChat
-curl -X POST --data "payload={ \"text\": \"${ICON} HOST: $HOST$   SERVICE: $APPLICATION$     MESSAGE: $TEXT$ <$MY_CHECK_MK/|more info>\"}" $MY_ROCKET_CHAT
 #Do what you want with it
