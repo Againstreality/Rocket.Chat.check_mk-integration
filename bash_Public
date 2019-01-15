@@ -51,7 +51,7 @@ else
   elif [ "$NOTIFY_HOSTSHORTSTATE" = "DOWN" ]
   then
       ICON=":warning:"
-  elif [ "$NOTIFY_SERVICESHORTSTATE" = "UP" ]
+  elif [ "$NOTIFY_HOSTSHORTSTATE" = "UP" ]
   then
       ICON=":white_check_mark:"
   else
